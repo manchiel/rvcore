@@ -1,3 +1,5 @@
 /target
+/src/*.bin
+/src/2_instr_prog
 *.bin
 2_instr_prog
