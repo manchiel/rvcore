@@ -1,6 +1,7 @@
 mod cpu;
 mod dram;
 mod bus;
+mod uart;
 
 use crate::dram::*;
 use crate::cpu::*;

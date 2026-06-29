@@ -169,7 +169,7 @@ impl CPU{
                                 Ok(())
                             },
                             _ => {
-                                println!("Invalid register-register add/mul/sub operation");
+                                println!("Invalid register-register add/sub operation");
                                 Err(())
                             },
                         }
@@ -186,9 +186,21 @@ impl CPU{
                         self.reg[rd] = if self.reg[rs1] < self.reg[rs2] {1} else {0};   //rd = (rs1 < rs2) ? 1 : 0
                         Ok(())                                                            
                     },
-                    0x4 =>{ //xor
-                        self.reg[rd] = self.reg[rs1] ^ self.reg[rs2]; //rd = rs1 ^ rs2
-                        Ok(())
+                    0x4 =>{ 
+                        match func7 {
+                            0x00 => { // xor
+                                self.reg[rd] = self.reg[rs1] ^ self.reg[rs2];                       //rd = rs1 ^ rs2
+                                Ok(())
+                            },
+                            0x01 => { // div 
+                                self.reg[rd] = if self.reg[rs2] == 0 { 0xFFFFFFFF }                 //rd = rs1 / rs2
+                                else{
+                                    (self.reg[rs1] as i64).wrapping_div(self.reg[rs2] as i64) as u64
+                                };
+                                Ok(())
+                            },
+                            _ => { println!("Invalid register-register xor/div operation"); Err(()) },
+                        }
                     },
                     0x5 =>{ 
                         //sra
@@ -197,9 +209,21 @@ impl CPU{
                         else {self.reg[rd] = self.reg[rs1] >> shamt};                               // rd = rs1 >> rs2[0:5]    
                         Ok(())                                
                     },
-                    0x6 =>{ //or
-                        self.reg[rd] = self.reg[rs1] | self.reg[rs2];       //rd = rs1 | rs2
-                        Ok(())
+                    0x6 =>{ 
+                        match func7 {
+                            0x00 => { // or
+                                self.reg[rd] = self.reg[rs1] | self.reg[rs2];                       //rd = rs1 | rs2
+                                Ok(())
+                            },
+                            0x01 => { // rem 
+                                self.reg[rd] = if self.reg[rs2] == 0 { self.reg[rs1] }
+                                else {
+                                    (self.reg[rs1] as i64).wrapping_rem(self.reg[rs2] as i64) as u64 //rd = rs1 % rs2
+                                };
+                                Ok(())
+                            },
+                             _ => { println!("Invalid register-register or/rem operation"); Err(()) },
+                        }
                     },
                     0x7 =>{ //and
                         self.reg[rd] = self.reg[rs1] & self.reg[rs2];   //rd = rs1 & rs2
