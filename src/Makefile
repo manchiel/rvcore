@@ -7,7 +7,7 @@ CFLAGS  = -Wl,-Ttext=0x0 -nostdlib
 
 #make bin file
 %.bin: %.s
-	$(CC) $(CFLAGS) -o $* $<
+	$(CC) $(CFLAGS) -march=rv64i -o $* $<
 	$(OBJCOPY) -O binary $* $@
 
 .PHONY: clean

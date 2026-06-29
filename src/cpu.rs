@@ -303,6 +303,58 @@ impl CPU{
                 self.reg[rd] = old_pc; //link
                 Ok(())
             },
+            
+            0x63 =>{  //BRANCH INSTRUCTIONS ( B Type )
+                let imm = (((instruction & 0x80000000) as i32 as i64 >> 19) as u64)
+                        | (((instruction & 0x80) << 4) as u64)
+                        | (((instruction >> 20) & 0x7e0) as u64)
+                        | (((instruction >> 7) & 0x1e) as u64); 
+
+                match func3{
+                    0x0 =>{ //beq
+                        if self.reg[rs1] == self.reg[rs2]{ 
+                            self.pc = self.pc.wrapping_add(imm).wrapping_sub(4);    //if (rs1 == rs2) pc += sext(con)
+                        }
+                        Ok(())
+                    },
+                    0x1 =>{ //bne
+                        if self.reg[rs1] != self.reg[rs2]{ 
+                            self.pc = self.pc.wrapping_add(imm).wrapping_sub(4);    //if (rs1 != rs2) pc += sext(con)
+                        }
+                        Ok(())
+                    },
+                    0x4 =>{ //blt 
+                        if (self.reg[rs1] as i64) < (self.reg[rs2] as i64) {
+                            self.pc = self.pc.wrapping_add(imm).wrapping_sub(4);    //if (rs1 < rs2) pc += sext(con)
+                        }
+                        Ok(())
+                    },
+                    0x5 =>{ //bge
+                        if self.reg[rs1] as i64 >= self.reg[rs2] as i64 { 
+                            self.pc = self.pc.wrapping_add(imm).wrapping_sub(4);    //if (rs1 < rs2) pc += sext(con)
+                        }
+                        Ok(())
+                    },
+                    0x6 =>{ //bltu
+                        if self.reg[rs1] < self.reg[rs2] { 
+                            self.pc = self.pc.wrapping_add(imm).wrapping_sub(4);    //if (rs1 < rs2) pc += sext(con)
+                        }
+                        Ok(())
+                    },
+                    0x7 =>{ //bgeu
+                        if self.reg[rs1] >= self.reg[rs2] { 
+                            self.pc = self.pc.wrapping_add(imm).wrapping_sub(4);    //if (rs1 < rs2) pc += sext(con)
+                        }
+                        Ok(())
+                    },
+                    _ =>{
+                        println!("Invalid branch instruction");
+                        Err(())
+                    },
+                }
+
+            },
+
         
             _=> {println!("Not supported command detected"); Err(())},
         }

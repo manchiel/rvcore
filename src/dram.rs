@@ -1,7 +1,7 @@
 //von Neumann architecture - instructions & data in memory
 
 pub const DRAM_SIZE: u64 = 1024 * 1024;    // 1MB ( TODO: xv6 is expecting 128MB like on QEMU)
-pub const DRAM_BASE: u64 = 0x0; //0x8000_0000; USING 0x0 for now SO I CAN TEST LOAD AND STORE INSTRUCTIONS    // taken from QEMU
+pub const DRAM_BASE: u64 = 0x8000_0000;    // taken from QEMU
 
 pub struct Dram{
     pub dra_memory: Vec<u8>, 
