@@ -31,8 +31,7 @@ fn main() -> io::Result<()> {
             Ok(instruction) => instruction,
             Err(_) => break,    // '_' -> throwaway
         };
-        println!("pc={:x} inst={:08x} opcode={:x} func3={:x}", 
-    cpu.pc, instruction, instruction & 0x7f, (instruction >> 12) & 0x7);
+        
         cpu.pc += 4; // instruction is always 32 = 8 * 4 bits wide
 
         //2.decode
@@ -47,9 +46,11 @@ fn main() -> io::Result<()> {
         if cpu.pc - DRAM_BASE + 4 > code_len as u64 { break; } 
 
     }
-
+    let mut index = 0;
     for reg in cpu.reg{
-        print!("\n{}",reg);
+        print!("\nx{} : {}",index,reg);
+        index+=1;
+        println!("");
     }
     Ok(())
 }

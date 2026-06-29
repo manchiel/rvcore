@@ -1,5 +1,4 @@
 /target
 /src/*.bin
-/src/2_instr_prog
-/src/load_store_test1
 *.bin
+test/*.bin
